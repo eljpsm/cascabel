@@ -39,7 +39,7 @@ Usage: cascabel add [OPTIONS] URL {NONE|SHELL|STOW} INSTALLATION_DIRECTORY
 Options:
   -p, --order-place INTEGER       Specify the order in which this repository
                                   is executed in relation to others.
-  -b, --branch TEXT               the branch to use
+  -b, --branch TEXT               Specify the branch to use.
   -h, --current-hash TEXT         Specify the Desired hash of git repository
                                   to use.
   -l, --lock-hash BOOLEAN         Lock the specified hash and do not pull from

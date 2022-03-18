@@ -134,7 +134,7 @@ def install(url: Optional[str], exclude: tuple[str], exclude_type: Optional[str]
 @click.argument("installation-directory", type=str)
 @click.option("--order-place", "-p", type=int, default=-1,
               help="Specify the order in which this repository is executed in relation to others.")
-@click.option("--branch", "-b", type=str, help="the branch to use")
+@click.option("--branch", "-b", type=str, help="Specify the branch to use.")
 @click.option("--current-hash", "-h", type=str, help="Specify the Desired hash of git repository to use.")
 @click.option("--lock-hash", "-l", type=bool, default=False,
               help="Lock the specified hash and do not pull from newer versions.")
