@@ -114,3 +114,7 @@ git@github.com:elijahjpassmore/.dotfiles.git:
 ```
 
 Logging can be found within `~/.config/cascabel/logging.log`.
+
+## License
+
+[MIT](LICENSE)
