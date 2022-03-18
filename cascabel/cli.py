@@ -38,24 +38,18 @@ def main() -> None:
 
 @main.command()
 @click.option("--url", "-u", type=click.Choice([r for r in original_configuration_contents]),
-              help="apply an individual repository url")
+              help="Install an individual repository.")
 @click.option("--exclude", "-e", type=click.Choice([r for r in original_configuration_contents]), multiple=True,
-              help="exclude a given repository")
+              help="Exclude a given repository.")
 @click.option("--exclude-type", "-t", type=click.Choice([t.name for t in RepositoryTypes]), multiple=True,
-              help="exclude all repositories of a specified type")
-@click.option("--ignore-warnings", "-i", type=bool, default=False, help="ignore any warning messages")
-def apply(url: Optional[str], exclude: tuple[str], exclude_type: Optional[str], ignore_warnings: bool = False) -> None:
-    """
-    Apply repositories to the current workstation.
-    :param url: The repository URL.
-    :param exclude: Repository URLs to exclude.
-    :param exclude_type: Repository types to exclude.
-    :param ignore_warnings: Ignore any and all warnings.
-    :return: None.
-    """
+              help="Exclude all repositories of a specified type.")
+@click.option("--ignore-warnings", "-i", type=bool, default=False, help="Ignore any warning messages.")
+def install(url: Optional[str], exclude: tuple[str], exclude_type: Optional[str],
+            ignore_warnings: bool = False) -> None:
+    """Clone or pull repositories and then install them."""
     if not url:
         # A repository has not been specified, so apply all configured repositories.
-        logger.info(f"Applying all repositories listed in configuration {global_manager.configuration_file_path}")
+        logger.info(f"Installing all repositories listed in configuration {global_manager.configuration_file_path}")
 
         # Get a list of all the (confirmed) repositories to ignore.
         parsed_exclude = set()
@@ -139,31 +133,19 @@ def apply(url: Optional[str], exclude: tuple[str], exclude_type: Optional[str], 
 @click.argument("type", type=click.Choice([t.name for t in RepositoryTypes]))
 @click.argument("installation-directory", type=str)
 @click.option("--order-place", "-p", type=int, default=-1,
-              help="the order in which this repository is executed in relation to others")
+              help="Specify the order in which this repository is executed in relation to others.")
 @click.option("--branch", "-b", type=str, help="the branch to use")
-@click.option("--current-hash", "-h", type=str, help="desired hash of git repository to use")
+@click.option("--current-hash", "-h", type=str, help="Specify the Desired hash of git repository to use.")
 @click.option("--lock-hash", "-l", type=bool, default=False,
-              help="lock the specified hash and do not pull from newer versions")
-@click.option("--execution-directory", "-e", type=str, help="the directory to evaluate for configuration files")
-@click.option("--overwrite/--no-overwrite", "-o", type=bool, default=False, help="overwrite any existing repository")
+              help="Lock the specified hash and do not pull from newer versions.")
+@click.option("--execution-directory", "-e", type=str, help="Set the directory to evaluate for configuration files.")
+@click.option("--overwrite/--no-overwrite", "-o", type=bool, default=False, help="Overwrite any existing repository.")
 def add(url: str, type: str, installation_directory: str, branch, current_hash: Optional[str],
         execution_directory: Optional[str],
         order_place: int = -1,
         lock_hash: bool = False,
         overwrite: bool = False) -> None:
-    """
-    Add a new repository configuration.
-    :param url: The repository URL.
-    :param type: The type of repository.
-    :param installation_directory: The directory to install the repository to.
-    :param branch: The branch to install.
-    :param current_hash: The current hash to start from.
-    :param execution_directory: The path to execute from.
-    :param order_place: The order place for repository execution order.
-    :param lock_hash: Whether to lock the hash.
-    :param overwrite: Whether to overwrite an existing repository.
-    :return: None.
-    """
+    """Add a new repository configuration."""
     # Get the type from the given key.
     try:
         parsed_type = RepositoryTypes[type.upper()]
@@ -189,16 +171,11 @@ def add(url: str, type: str, installation_directory: str, branch, current_hash: 
 
 
 @main.command()
-@click.option("--message", "-m", type=str, help="the commit message to apply to each repository")
+@click.option("--message", "-m", type=str, help="Change the commit message used.")
 @click.option("--exclude", "-e", type=click.Choice([r for r in original_configuration_contents]), multiple=True,
-              help="exclude a given repository")
-def update(message: Optional[str], exclude: tuple[str]) -> None:
-    """
-    Update all eligible repositories.
-    :param message: The message to apply to each repository.
-    :param exclude: Repository URLs to exclude.
-    :return: None.
-    """
+              help="Exclude a given repository.")
+def push(message: Optional[str], exclude: tuple[str]) -> None:
+    """Push all repository changes."""
     repository_urls = [url for url in original_configuration_contents]
 
     expected_repository_paths = []
@@ -206,7 +183,7 @@ def update(message: Optional[str], exclude: tuple[str]) -> None:
         expected_repository_paths = [original_configuration_contents[url]["installation_directory"] for url in
                                      repository_urls if url not in exclude]
     except KeyError as e:
-        logger.error(f"Could not update repositories: {e}")
+        logger.error(f"Could not push repositories: {e}")
 
     if not expected_repository_paths:
         logger.info("No repositories to push changes: cancelling")
@@ -227,10 +204,7 @@ def update(message: Optional[str], exclude: tuple[str]) -> None:
 
 @main.command()
 def list_all() -> None:
-    """
-    List all configured repositories.
-    :return: None.
-    """
+    """List all configured repositories."""
     print(global_manager.get_configuration())
 
 
